@@ -38,7 +38,7 @@ const userSchema = new Schema<IUser>(
 );
 
 const User = model('User', userSchema);
-module.exports = User;
+export default User;
 
 // const courseSchema = new Schema<ICourse>(
 //     {
