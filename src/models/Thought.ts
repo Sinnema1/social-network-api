@@ -1,19 +1,8 @@
-import { Schema, Types, model, type Document } from "mongoose";
+import { Schema, Types, model, Document } from "mongoose";
 
-// interface IAssignment extends Document {
-//     assignmentId: Schema.Types.ObjectId,
-//     name: string,
-//     score: number
-// }
-
-// interface IStudent extends Document {
-//     first: string,
-//     last: string,
-//     github: string,
-//     assignments: Schema.Types.ObjectId[]
-// }
+// Reaction interface - subdocument
 interface IReaction extends Document {
-  reactionId: Schema.Types.ObjectId;
+  reactionId: Types.ObjectId;
   reactionBody: string;
   username: string;
   createdAt: Date;
@@ -23,7 +12,8 @@ interface IThought extends Document {
   thoughtText: string;
   createdAt: Date;
   username: string;
-  reactions: Schema.Types.ObjectId[];
+  reactions: IReaction[];
+  reactionCount?: number;
 }
 
 const reactionSchema = new Schema<IReaction>(
@@ -34,7 +24,7 @@ const reactionSchema = new Schema<IReaction>(
     },
     reactionBody: {
       type: String,
-      equired: true,
+      required: true,
       maxlength: 280,
     },
     username: {
@@ -47,8 +37,11 @@ const reactionSchema = new Schema<IReaction>(
     },
   },
   {
-    timestamps: true,
-    _id: false,
+    toJSON: {
+      getters: true,
+    },
+    id: false,
+    _id: false,  // make sure reactions don't get their own _id
   }
 );
 
@@ -58,7 +51,7 @@ const thoughtSchema = new Schema<IThought>(
       type: String,
       required: true,
       minlength: 1,
-      maxlegnth: 280,
+      maxlength: 280,
     },
     createdAt: {
       type: Date,
@@ -72,66 +65,17 @@ const thoughtSchema = new Schema<IThought>(
   },
   {
     toJSON: {
+      virtuals: true,
       getters: true,
     },
-    timestamps: true,
+    id: false,
   }
 );
 
-const Thought = model('Thought', thoughtSchema);
+// Virtual property for reaction count
+thoughtSchema.virtual("reactionCount").get(function (this: IThought) {
+  return this.reactions.length;
+});
+
+const Thought = model<IThought>("Thought", thoughtSchema);
 export default Thought;
-
-// const assignmentSchema = new Schema<IAssignment>(
-//     {
-//         assignmentId: {
-//             type: Schema.Types.ObjectId,
-//             default: () => new Types.ObjectId(),
-//         },
-//         name: {
-//             type: String,
-//             required: true,
-//             maxlength: 50,
-//             minlength: 4,
-//             default: 'Unnamed assignment',
-//         },
-//         score: {
-//             type: Number,
-//             required: true,
-//             default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
-//         },
-//     },
-//     {
-//         timestamps: true,
-//         _id: false
-//     }
-// );
-
-// const studentSchema = new Schema<IStudent>({
-//     first: {
-//         type: String,
-//         required: true,
-//         max_length: 50,
-//     },
-//     last: {
-//         type: String,
-//         required: true,
-//         max_length: 50,
-//     },
-//     github: {
-//         type: String,
-//         required: true,
-//         max_length: 50,
-//     },
-//     assignments: [assignmentSchema],
-// },
-//     {
-//         toJSON: {
-//             getters: true,
-//         },
-//         timestamps: true
-//     }
-// );
-
-// const Student = model('Student', studentSchema);
-
-// export default Student;

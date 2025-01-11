@@ -7,7 +7,7 @@ import {
   deleteStudent,
   addAssignment,
   removeAssignment,
-} from '../../controllers/studentController.js';
+} from '../../controllers/thoughtController.js';
 
 // /api/students
 router.route('/').get(getAllStudents).post(createStudent);
