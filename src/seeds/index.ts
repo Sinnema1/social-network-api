@@ -1,6 +1,6 @@
-import db from '../config/connection';
-import { User, Thought } from '../models/index';
-import { getUsers, getRandomThoughts } from './data';
+import db from '../config/connection.js';
+import { User, Thought } from '../models/index.js';
+import { getUsers, getRandomThoughts } from './data.js';
 
 const seedDatabase = async (): Promise<void> => {
   try {

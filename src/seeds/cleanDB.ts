@@ -1,5 +1,5 @@
 import { User, Thought } from '../models/index.js';
-import db from '../config/connection';
+import db from '../config/connection.js';
 
 const cleanDB = async (): Promise<void> => {
   try {
