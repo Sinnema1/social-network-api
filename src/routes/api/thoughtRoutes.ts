@@ -1,24 +1,32 @@
 import { Router } from 'express';
-const router = Router();
 import {
-  getAllStudents,
-  getStudentById,
-  createStudent,
-  deleteStudent,
-  addAssignment,
-  removeAssignment,
-} from '../../controllers/thoughtController.js';
+  getAllThoughts,
+  getThoughtById,
+  createThought,
+  updateThought,
+  deleteThought,
+  addReaction,
+  removeReaction,
+} from '../../controllers/thoughtController';
 
-// /api/students
-router.route('/').get(getAllStudents).post(createStudent);
+const thoughtRouter = Router();
 
-// /api/students/:studentId
-router.route('/:studentId').get(getStudentById).delete(deleteStudent);
+// GET all thoughts and POST a new thought
+thoughtRouter.route('/')
+  .get(getAllThoughts)      // GET /api/thoughts
+  .post(createThought);     // POST /api/thoughts
 
-// /api/students/:studentId/assignments
-router.route('/:studentId/assignments').post(addAssignment);
+// GET, PUT, DELETE a thought by ID
+thoughtRouter.route('/:id')
+  .get(getThoughtById)      // GET /api/thoughts/:id
+  .put(updateThought)       // PUT /api/thoughts/:id
+  .delete(deleteThought);   // DELETE /api/thoughts/:id
 
-// /api/students/:studentId/assignments/:assignmentId
-router.route('/:studentId/assignments/:assignmentId').delete(removeAssignment);
+// Add and remove a reaction to a thought
+thoughtRouter.route('/:thoughtId/reactions')
+  .post(addReaction);       // POST /api/thoughts/:thoughtId/reactions
 
-export { router as studentRouter} ;
+thoughtRouter.route('/:thoughtId/reactions/:reactionId')
+  .delete(removeReaction);  // DELETE /api/thoughts/:thoughtId/reactions/:reactionId
+
+export default thoughtRouter;

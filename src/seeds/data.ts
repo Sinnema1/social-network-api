@@ -1,115 +1,67 @@
-const names = [
-  'Aaran',
-  'Aaren',
-  'Aarez',
-  'Aarman',
-  'Aaron',
-  'Aaron-James',
-  'Aarron',
-  'Aaryan',
-  'Aaryn',
-  'Aayan',
-  'Aazaan',
-  'Abaan',
-  'Abbas',
-  'Abdallah',
-  'Abdalroof',
-  'Abdihakim',
-  'Abdirahman',
-  'Abdisalam',
-  'Abdul',
-  'Abdul-Aziz',
-  'Abdulbasir',
-  'Abdulkadir',
-  'Abdulkarem',
-  'Smith',
-  'Jones',
-  'Coollastname',
-  'enter_name_here',
-  'Ze',
-  'Zechariah',
-  'Zeek',
-  'Zeeshan',
-  'Zeid',
-  'Zein',
-  'Zen',
-  'Zendel',
-  'Zenith',
-  'Zennon',
-  'Zeph',
-  'Zerah',
-  'Zhen',
-  'Zhi',
-  'Zhong',
-  'Zhuo',
-  'Zi',
-  'Zidane',
-  'Zijie',
-  'Zinedine',
-  'Zion',
-  'Zishan',
-  'Ziya',
-  'Ziyaan',
-  'Zohaib',
-  'Zohair',
-  'Zoubaeir',
-  'Zubair',
-  'Zubayr',
-  'Zuriel',
-  'Xander',
-  'Jared',
-  'Courtney',
-  'Gillian',
-  'Clark',
-  'Jared',
-  'Grace',
-  'Kelsey',
-  'Tamar',
-  'Alex',
-  'Mark',
-  'Tamar',
-  'Farish',
-  'Sarah',
-  'Nathaniel',
-  'Parker',
+import { Types } from "mongoose";
+
+const usernames = ["test1", "test2", "test3", "test4", "test5"];
+
+// thought examples
+const thoughtTexts = [
+  "Just finished learning about MongoDB!",
+  "JavaScript is awesome.",
+  "Debugging is like being the detective in a crime movie where you are also the murderer.",
+  "Working on a new project. Exciting times ahead!",
+  "Why does my code work? I don't know, but I'm glad it does!",
+  "Coding late into the night again!",
 ];
 
-const appDescriptions = [
-  'Decision Tracker',
-  'Find My Phone',
-  'Learn Piano',
-  'Starbase Defender',
-  'Tower Defense',
-  'Monopoly Money Manager',
-  'Movie trailers',
-  'Hello world',
-  'Stupid Social Media App',
-  'Notes',
-  'Messages',
-  'Email',
-  'Compass',
-  'Firefox',
-  'Running app',
-  'Cooking app',
-  'Poker',
-  'Deliveries',
+// reaction examples
+const reactionBodies = [
+  "Nice!",
+  "I totally agree!",
+  "Keep it up!",
+  "Amazing thought!",
+  "Haha, true!",
+  "Wow, that's insightful.",
 ];
 
-// Get a random item given an array
-export const getRandomArrItem = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
+// function to get a random item from any array
+export const getRandomArrItem = <T>(arr: T[]): T =>
+  arr[Math.floor(Math.random() * arr.length)];
 
-// Gets a random full name
-export const getRandomName =() =>
-  `${getRandomArrItem(names)} ${getRandomArrItem(names)}`;
+// create test users (test1 to test5)
+export const getUsers = () => {
+  return usernames.map((username) => ({
+    _id: new Types.ObjectId(),
+    username,
+    email: `${username}@mail.com`,
+    thoughts: [],
+    friends: [],
+  }));
+};
 
-// Function to generate random assignments that we can add to student object.
-export const getRandomAssignments = (int: number) => {
-  const results = [];
-  for (let i = 0; i < int; i++) {
-    results.push({
-      name: getRandomArrItem(appDescriptions),
-      score: Math.floor(Math.random() * (99 - 70 + 1) + 70),
+// create random thoughts for users
+export const getRandomThoughts = (
+  numThoughts: number,
+  userIds: Types.ObjectId[]
+) => {
+  const thoughts = [];
+
+  for (let i = 0; i < numThoughts; i++) {
+    const randomUser = getRandomArrItem(userIds);
+
+    thoughts.push({
+      thoughtText: getRandomArrItem(thoughtTexts),
+      username: usernames[userIds.indexOf(randomUser)],
+      userId: randomUser,
+      reactions: [
+        {
+          reactionId: new Types.ObjectId(),
+          reactionBody: getRandomArrItem(reactionBodies),
+          username: getRandomArrItem(usernames),
+          createdAt: new Date(),
+        },
+      ],
+      createdAt: new Date(),
     });
   }
-  return results;
+
+  return thoughts;
 };

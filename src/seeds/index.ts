@@ -1,49 +1,36 @@
-import db from '../config/connection.js';
-import { Course, Student } from '../models/index.js';
-import cleanDB from './cleanDB.js';
-import { getRandomName, getRandomAssignments } from './data.js';
+import db from '../config/connection';
+import { User, Thought } from '../models/index';
+import { getUsers, getRandomThoughts } from './data';
 
-try {
-  await db();
-  await cleanDB();
+const seedDatabase = async (): Promise<void> => {
+  try {
+    const connection = await db();
+    console.log('Database connected.');
 
-  // Create empty array to hold the students
-  const students = [];
+    // Clean the database
+    await User.deleteMany({});
+    await Thought.deleteMany({});
+    console.log('Collections cleaned.');
 
-  // Loop 20 times -- add students to the students array
-  for (let i = 0; i < 20; i++) {
-    // Get some random assignment objects using a helper function that we imported from ./data
-    const assignments = getRandomAssignments(20);
+    // Insert test users
+    const users = getUsers();
+    await User.insertMany(users);
+    console.log('Users seeded.');
 
-    const fullName = getRandomName();
-    const first = fullName.split(' ')[0];
-    const last = fullName.split(' ')[1];
-    const github = `${first}${Math.floor(Math.random() * (99 - 18 + 1) + 18)}`;
+    // Insert random thoughts for users
+    const thoughts = getRandomThoughts(10, users.map(user => user._id));
+    await Thought.insertMany(thoughts);
+    console.log('Thoughts seeded.');
 
-    students.push({
-      first,
-      last,
-      github,
-      assignments,
-    });
+    // Close the connection
+    await connection.close();
+    console.log('Database connection closed.');
+
+    process.exit(0);
+  } catch (err) {
+    console.error('Seeding error:', err);
+    process.exit(1);
   }
+};
 
-  // Add students to the collection and await the results
-  const studentData = await Student.create(students);
-
-  // Add courses to the collection and await the results
-  await Course.create({
-    name: 'UCLA',
-    inPerson: false,
-    students: [...studentData.map(({ _id }: { [key: string]: any }) => _id)],
-  });
-
-  // Log out the seed data to indicate what should appear in the database
-  console.table(students);
-  console.info('Seeding complete! 🌱');
-  process.exit(0);
-} catch (error) {
-  console.error('Error seeding database:', error);
-  process.exit(1);
-}
-
+seedDatabase();

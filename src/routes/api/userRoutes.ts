@@ -1,21 +1,30 @@
 import { Router } from 'express';
-const router = Router();
 import {
-  getAllCourses,
-  getCourseById,
-  createCourse,
-  updateCourse,
-  deleteCourse,
-} from '../../controllers/userController.js';
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  addFriend,
+  removeFriend,
+} from '../../controllers/userController';
 
-// /api/courses
-router.route('/').get(getAllCourses).post(createCourse);
+const userRouter = Router();
 
-// /api/courses/:courseId
-router
-  .route('/:courseId')
-  .get(getCourseById)
-  .put(updateCourse)
-  .delete(deleteCourse);
+// GET all users and POST a new user
+userRouter.route('/')
+  .get(getAllUsers)     // GET /api/users
+  .post(createUser);    // POST /api/users
 
-export { router as courseRouter };
+// GET, PUT, DELETE a user by ID
+userRouter.route('/:id')
+  .get(getUserById)     // GET /api/users/:id
+  .put(updateUser)      // PUT /api/users/:id
+  .delete(deleteUser);  // DELETE /api/users/:id
+
+// Add and remove a friend
+userRouter.route('/:userId/friends/:friendId')
+  .post(addFriend)      // POST /api/users/:userId/friends/:friendId
+  .delete(removeFriend);// DELETE /api/users/:userId/friends/:friendId
+
+export default userRouter;
