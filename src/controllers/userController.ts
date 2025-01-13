@@ -5,12 +5,14 @@ import { User, Thought } from "../models/index.js";
  * GET All Users /api/users
  * @returns an array of users with populated thoughts and friends
  */
-export const getAllUsers = async (_req: Request, res: Response): Promise<Response | void> => {
+export const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const users = await User.find().populate('thoughts').populate('friends');
-    return res.json({ users, count: users.length });
-  } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    const users = await User.find()
+      .select("-__v"); 
+
+    res.status(200).json({ users, count: users.length });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch users", error });
   }
 };
 
