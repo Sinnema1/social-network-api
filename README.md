@@ -174,5 +174,5 @@ This project is licensed under the MIT License.
 ## Questions
 
 - **GitHub**: [Sinnema](https://github.com/Sinnema1/social-network-api)
-- **Walkthrough**:[Video Link](https://drive.google.com/file/d/1E8Cv6pBd23OGNvcrsn7Q4eDWYOXyBW0m/view?usp=share_link)
+- **Walkthrough**: [Video Link](https://drive.google.com/file/d/1E8Cv6pBd23OGNvcrsn7Q4eDWYOXyBW0m/view?usp=share_link)
 - **Email**: test@test.com
